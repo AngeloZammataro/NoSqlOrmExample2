@@ -19,6 +19,7 @@ public class UserController {
     // facciamo un PostMapping per creare un User
     @PostMapping("")
     public User createUser(@RequestBody User user){
+        user.setId(null);
         return userRepository.save(user);
     }
     // facciamo un GetMapping per ottenere una lista di tutti gli User
