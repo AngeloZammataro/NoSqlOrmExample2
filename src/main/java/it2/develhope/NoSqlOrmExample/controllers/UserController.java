@@ -14,7 +14,7 @@ public class UserController {
 
     //dobbiamo richiamare l'interfaccia UserRepository
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     // facciamo un PostMapping per creare un User
     @PostMapping("")
@@ -28,9 +28,31 @@ public class UserController {
         return userRepository.findAll();
     }
 
+    @GetMapping("/count")
+    public long count(){
+        return userRepository.count();
+    }
+
     //facciamo un GetMapping per ottenere un User tramite id
     @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable String id){
-        return userRepository.findById(id);
+    public User getUsers(@PathVariable String id) throws Exception{
+        Optional<User> user = userRepository.findById(id);
+        if(user.isPresent()){
+            return user.get();
+        }else{
+            throw new Exception("User is not found");
+        }
+    }
+
+    @PutMapping("/{id}")
+    public User editUser(@PathVariable String id, @RequestBody  User user) throws Exception{
+        if(!userRepository.existsById(id)) throw new Exception("User is not found");
+        user.setId(id);
+        return userRepository.save(user);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable String id){
+        userRepository.deleteById(id);
     }
 }
